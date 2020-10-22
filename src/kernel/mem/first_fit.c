@@ -143,6 +143,16 @@ void init() {
         mem_zone[NORMAL].all_pages * sizeof(list_entry_t);
     uint32_t highmem_pmm_info_size =
         mem_zone[HIGHMEM].all_pages * sizeof(list_entry_t);
+    //管理信息也需占用页表
+    for(unsigned int i=DMA_start_addr;i<DMA_start_addr+dma_pmm_info_size;i+=PMM_PAGE_SIZE){
+        mem_page[i/(unsigned int)PMM_PAGE_SIZE].ref=1;
+    }
+    for(unsigned int i=NORMAL_start_addr;i<NORMAL_start_addr+normal_pmm_info_size;i+=PMM_PAGE_SIZE){
+        mem_page[i/(unsigned int)PMM_PAGE_SIZE].ref=1;
+    }
+    for(unsigned int i=HIGHMEM_start_addr;i<HIGHMEM_start_addr+highmem_pmm_info_size;i+=PMM_PAGE_SIZE){
+        mem_page[i/(unsigned int)PMM_PAGE_SIZE].ref=1;
+    }
     printk_info("dma_need_page:%d\n", dma_pmm_info_size / PMM_PAGE_SIZE);
     printk_info("normal_need_page:%d\n", normal_pmm_info_size / PMM_PAGE_SIZE);
     printk_info("highmem_need_page:%d\n",
